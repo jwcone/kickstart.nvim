@@ -81,10 +81,12 @@ require('lazy').setup({
   {
     -- LSP Configuration & Plugins
     'neovim/nvim-lspconfig',
+    version = '*',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
       { 'williamboman/mason.nvim', config = true },
       'williamboman/mason-lspconfig.nvim',
+      version = '*',
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -98,6 +100,7 @@ require('lazy').setup({
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
+    version = '*',
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       {
@@ -128,6 +131,7 @@ require('lazy').setup({
   {
     -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    version = '*',
     opts = {
       -- See `:help gitsigns.txt`
       signs = {
@@ -203,6 +207,7 @@ require('lazy').setup({
   {
     -- Theme inspired by Atom
     'navarasu/onedark.nvim',
+    version = '*',
     priority = 1000,
     lazy = false,
     config = function()
@@ -217,6 +222,7 @@ require('lazy').setup({
   {
     -- Set lualine as statusline
     'nvim-lualine/lualine.nvim',
+    version = '*',
     -- See `:help lualine.txt`
     opts = {
       options = {
@@ -231,6 +237,7 @@ require('lazy').setup({
   {
     -- Add indentation guides even on blank lines
     'lukas-reineke/indent-blankline.nvim',
+    version = '*',
     -- Enable `lukas-reineke/indent-blankline.nvim`
     -- See `:help ibl`
     main = 'ibl',
@@ -264,6 +271,7 @@ require('lazy').setup({
   {
     -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    version = '*',
     dependencies = {
       'nvim-treesitter/nvim-treesitter-textobjects',
     },
