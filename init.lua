@@ -289,6 +289,8 @@ require('lazy').setup({
 -- See `:help vim.o`
 -- NOTE: You can change these options as you wish!
 
+vim.o.textwidth = 72
+
 vim.o.tabstop = 4
 vim.o.shiftwidth = 4
 vim.o.expandtab = true
