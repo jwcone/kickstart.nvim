@@ -1,3 +1,5 @@
+-- ~/.config/nvim/init.lua
+
 --[[
 
 =====================================================================
@@ -299,8 +301,107 @@ require('lazy').setup({
   --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --
   --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
-  { import = 'custom.plugins' },
-}, {})
+  { import = 'custom.plugins', }, -- Removed the 'config' block from here
+}, { verbose = true, }) -- Keep verbose true for now
+
+-- ********************************************************************
+-- IMPORTANT: Add your DAP JavaScript/TypeScript Configurations HERE
+-- This ensures they are defined AFTER nvim-dap is loaded by lazy.nvim
+-- through kickstart.plugins.debug, but before the user tries to debug.
+-- ********************************************************************
+
+-- Ensure dap is loaded before configuring
+local dap = require("dap")
+local dap_vscode_js = require("dap-vscode-js")
+
+-- Explicitly define the pwa-node adapter
+-- This will override any default configuration nvim-dap-vscode-js might attempt for pwa-node.
+dap.adapters["pwa-node"] = {
+    type = "server",
+    host = "localhost",
+    port = "${port}",
+    executable = {
+        command = "node",
+        args = {
+            vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js",
+            "${port}",
+        },
+    },
+}
+
+-- Define the JavaScript configurations
+dap.configurations.javascript = {
+    {
+        type = "pwa-node",
+        request = "launch",
+        name = "Launch file (Node.js)",
+        program = "${file}",
+        cwd = "${workspaceFolder}",
+        console = "integratedTerminal",
+    },
+    {
+        type = "pwa-node",
+        request = "attach",
+        name = "Attach to Node.js Process",
+        processId = require('dap.ext.vscode').resolve_node_debug_id,
+        cwd = "${workspaceFolder}",
+    },
+}
+
+-- Define the TypeScript configurations
+dap.configurations.typescript = {
+    {
+        type = "pwa-node",
+        request = "launch",
+        name = "Launch file (TypeScript Node.js)",
+        program = "${file}",
+        cwd = "${workspaceFolder}",
+        console = "integratedTerminal",
+        runtimeExecutable = "node",
+        runtimeArgs = { "--loader", "ts-node/esm" },
+        sourceMaps = true,
+        protocol = "inspector",
+    },
+    {
+        type = "pwa-node",
+        request = "attach",
+        name = "Attach to TS Node.js Process",
+        processId = require('dap.ext.vscode').resolve_node_debug_id,
+        cwd = "${workspaceFolder}",
+        runtimeExecutable = "node",
+        runtimeArgs = { "--loader", "ts-node/esm" },
+    },
+}
+
+-- Configure nvim-dap-vscode-js for Chrome debugging (if still desired).
+-- IMPORTANT: We are explicitly telling it NOT to manage node/typescript adapters or configurations
+-- because we are defining them manually and it's conflicting.
+dap_vscode_js.setup({
+    -- Ensure these are explicitly set to false or empty if you don't want them.
+    -- The plugin's defaults can be too aggressive.
+    adapters = {}, -- Prevents it from registering any adapters itself
+    configurations = {}, -- Prevents it from registering any configurations itself
+    node_configs = {}, -- Explicitly empty
+    typescript_configs = {}, -- Explicitly empty
+    chrome_configs = {
+        {
+            type = "pwa-chrome",
+            request = "launch",
+            name = "Launch Chrome against localhost",
+            url = "http://localhost:3000",
+            webRoot = "${workspaceFolder}",
+            sourceMaps = true,
+        },
+        {
+            type = "pwa-chrome",
+            request = "attach",
+            name = "Attach to Chrome",
+            port = 9222,
+            webRoot = "${workspaceFolder}",
+            sourceMaps = true,
+        },
+    },
+})
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
